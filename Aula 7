@@ -1,0 +1,106 @@
+agenda = [
+    {"nome": "Henrique", "telefone": "13 99999-1111", "cidade": "Santos"},
+    {"nome": "Mariana",  "telefone": "11 98888-2222", "cidade": "São Paulo"},
+    {"nome": "Lucas",    "cidade": "Santos"},  # sem telefone cadastrado
+    {"nome": "Fernanda", "telefone": "13 97777-3333"}  # sem cidade cadastrada
+]
+
+def buscar(agenda, nome):
+    for contato in agenda:
+        if contato["nome"].lower() == nome.lower():
+            return contato
+    return None
+
+def de_cidade(agenda, cidade):
+    encontrados = []
+    for contato in agenda:
+        if contato.get("cidade", "").lower() == cidade.lower():
+            encontrados.append(contato["nome"])
+    return encontrados
+
+# --- Testes ---
+achei = buscar(agenda, "Lucas")
+if achei:
+    print(f"Contato: {achei['nome']} | Tel: {achei.get('telefone', 'não informado')}")
+
+print("Contatos de Santos:", de_cidade(agenda, "Santos"))
+
+
+
+#Refatorar o boletim (com lista de dicionários + embaralhamento)#
+
+import random
+
+def media_da_turma(turma):
+    soma = 0
+    for a in turma:
+        soma += a["nota"]
+    return soma / len(turma)
+
+def maior_nota(turma):
+    melhor = turma[0]
+    for a in turma:
+        if a["nota"] > melhor["nota"]:
+            melhor = a
+    return melhor["nome"]
+
+def aprovados(turma, corte=7):
+    lista = []
+    for a in turma:
+        if a["nota"] >= corte:
+            lista.append(a["nome"])
+    return lista
+
+
+boletim = [
+    {"nome": "Henrique", "nota": 8.5},
+    {"nome": "Mariana",  "nota": 9.2},
+    {"nome": "Lucas",    "nota": 6.0},
+    {"nome": "Fernanda", "nota": 7.8},
+    {"nome": "Rafael",   "nota": 5.5}
+]
+
+
+random.shuffle(boletim)
+
+for aluno in boletim:
+    print(f"{aluno['nome']:10s} -> {aluno['nota']}")
+
+print(f"\nMédia: {media_da_turma(boletim):.2f}")
+print(f"Maior nota: {maior_nota(boletim)}")
+print(f"Aprovados: {aprovados(boletim)}")
+
+
+
+#json#
+
+import json
+
+resposta_texto = '''
+{
+  "id": "chatcmpl-9xY2",
+  "object": "chat.completion",
+  "model": "um-modelo-qualquer",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Uma lista guarda ordem; um dicionario guarda nome."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 24,
+    "completion_tokens": 11,
+    "total_tokens": 35
+  }
+}
+'''
+
+dados = json.loads(resposta_texto)
+
+print("Texto da resposta:", dados["choices"][0]["message"]["content"])
+print("Modelo usado:", dados["model"])
+print("Total de tokens:", dados["usage"]["total_tokens"])

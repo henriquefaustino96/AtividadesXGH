@@ -1,0 +1,96 @@
+#Agenda à prova de bala#
+
+import json
+
+ARQUIVO = "agenda.json"
+
+def carregar_agenda(arquivo=ARQUIVO):
+    try:
+        with open(arquivo, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Aviso: '{arquivo}' não encontrado. Criando nova agenda.")
+        return []
+    except json.JSONDecodeError:
+        print(f"Aviso: '{arquivo}' está corrompido. Iniciando lista vazia.")
+        return []
+
+def salvar_agenda(agenda, arquivo=ARQUIVO):
+    with open(arquivo, "w", encoding="utf-8") as f:
+        json.dump(agenda, f, indent=2, ensure_ascii=False)
+
+def menu():
+    agenda = carregar_agenda()
+
+    while True:
+        print("\n[1] Listar contatos  [2] Adicionar contato  [3] Sair")
+        try:
+            opcao = int(input("Escolha uma opção: "))
+        except ValueError:
+            print("Erro: digite o número da opção (1, 2 ou 3).")
+            continue
+
+        if opcao == 1:
+            if not agenda:
+                print("Agenda vazia.")
+            for c in agenda:
+                print(f"- {c['nome']} | {c['telefone']} | {c['cidade']}")
+        elif opcao == 2:
+            nome = input("Nome: ").strip()
+            telefone = input("Telefone: ").strip()
+            cidade = input("Cidade: ").strip()
+            agenda.append({"nome": nome, "telefone": telefone, "cidade": cidade})
+            salvar_agenda(agenda)
+            print("Contato salvo!")
+        elif opcao == 3:
+            print("Encerrando...")
+            break
+        else:
+            print("Opção inexistente. Escolha 1, 2 ou 3.")
+
+menu()
+
+
+
+#Leitor de CSV tolerante#
+
+import csv
+
+
+conteudo_sujo = """nome,nota,faltas
+Ana,8.5,2
+Bruno,,5
+Carla,7,5,1
+Diego,9.0
+Elis,abc,0
+Fabio,6.5,3
+"""
+
+with open("turma_suja.csv", "w", encoding="utf-8") as f:
+    f.write(conteudo_sujo)
+
+notas_validas = []
+
+with open("turma_suja.csv", "r", encoding="utf-8") as f:
+    leitor = csv.DictReader(f)
+    for num_linha, linha in enumerate(leitor, start=2):
+        try:
+            # Se faltar coluna, linha["nota"] vira None (gera TypeError no float)
+            # Se vier texto/vazio/vírgula sem tratamento, gera ValueError
+            if linha["faltas"] is None:
+                raise ValueError("coluna 'faltas' ausente")
+
+            nota = float(linha["nota"])
+            faltas = int(linha["faltas"])
+            notas_validas.append((linha["nome"], nota, faltas))
+
+        except (ValueError, TypeError) as erro:
+            print(f"[Linha {num_linha} ignorada] Dados inválidos {linha} -> Motivo: {erro}")
+
+print("\nRegistros válidos processados:")
+for nome, nota, faltas in notas_validas:
+    print(f"- {nome}: nota {nota}, {faltas} faltas")
+
+if notas_validas:
+    media = sum(item[1] for item in notas_validas) / len(notas_validas)
+    print(f"\nMédia dos válidos: {media:.2f}")

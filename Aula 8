@@ -1,0 +1,67 @@
+import json
+import os
+
+ARQUIVO = "agenda.json"
+
+
+if os.path.exists(ARQUIVO):
+    with open(ARQUIVO, "r", encoding="utf-8") as f:
+        agenda = json.load(f)
+else:
+    agenda = []
+
+print(f"Contatos atuais ({len(agenda)}):")
+for c in agenda:
+    print(f"- {c['nome']} | {c['telefone']} | {c['cidade']}")
+
+
+print("\n--- Novo Contato ---")
+nome = input("Nome: ").strip()
+telefone = input("Telefone: ").strip()
+cidade = input("Cidade: ").strip()
+
+agenda.append({
+    "nome": nome,
+    "telefone": telefone,
+    "cidade": cidade
+})
+
+
+with open(ARQUIVO, "w", encoding="utf-8") as f:
+    json.dump(agenda, f, indent=2, ensure_ascii=False)
+
+print("\nContato salvo! Feche e rode o programa novamente para confirmar.")
+
+
+
+#Diário de bordo#
+
+from datetime import datetime
+
+data_hoje = datetime.now().strftime("%d/%m/%Y %H:%M")
+aprendizado = input("O que você aprendeu hoje? ")
+
+with open("diario.txt", "a", encoding="utf-8") as f:
+    f.write(f"[{data_hoje}] {aprendizado}\n")
+
+print("Anotado no diario.txt!")
+
+
+
+#Boletim em CSV (dois programas separados)#
+
+import csv
+
+turma = [
+    ["nome", "nota", "faltas"],
+    ["Ana", 8.5, 2],
+    ["Bruno", 4.0, 7],
+    ["Carla", 9.5, 0],
+    ["Diego", 7.0, 1]
+]
+
+with open("turma.csv", "w", newline="", encoding="utf-8") as f:
+    escritor = csv.writer(f)
+    escritor.writerows(turma)  # escreve todas as linhas de uma vez
+
+print("Arquivo turma.csv criado com sucesso!")

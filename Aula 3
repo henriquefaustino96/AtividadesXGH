@@ -1,0 +1,59 @@
+#classificador de notas#
+
+nomes = ["Ana", "Bruno", "Carla", "Diego"]
+notas = [8.5, 4.0, 9.5, 6.0]
+
+
+media = sum(notas) / len(notas)
+print(f"Média da turma: {media:.2f}")
+
+
+maior_nota = max(notas)
+posicao_maior = notas.index(maior_nota)
+nome_maior = nomes[posicao_maior]
+print(f"Maior nota: {maior_nota} (tirada por {nome_maior})")
+
+
+print("\n APROVADOS ")
+for i in range(len(nomes)):
+    if notas[i] >= 7:
+        print(f"{nomes[i]}: {notas[i]}")
+
+
+#validador de senhas#
+
+senha = input("Crie uma senha: ")
+
+if len(senha) >= 8:
+    print("Senha forte!")
+else:
+    print("Senha fraca: a senha deve ter no mínimo 8 caracteres.")
+
+
+#validador eh_spam#
+
+def eh_spam(mensagem):
+    mensagem_lc = mensagem.lower()
+
+    suspeitas = [
+        "promocao", "promoção",
+        "gratis", "grátis",
+        "clique",
+        "premio", "prêmio",
+        "ganhe dinheiro"
+    ]
+
+    for palavra in suspeitas:
+        if palavra in mensagem_lc:
+            return True
+    return False
+
+
+
+msg1 = "Gostaria do link para entrar no curso gratis de Python"
+
+
+msg2 = "Promoção imperdível, clique aqui!"
+
+print(f"Mensagem 1 é spam? {eh_spam(msg1)}")
+print(f"Mensagem 2 é spam? {eh_spam(msg2)}")

@@ -1,0 +1,80 @@
+#jogo advinhação#
+
+import random
+
+def sortear(maximo):
+    return random.randint(1, maximo)
+
+def comparar(chute, segredo):
+    if chute < segredo:
+        return "maior"
+    elif chute > segredo:
+        return "menor"
+    else:
+        return "acertou"
+
+def avaliar(tentativas):
+    if tentativas <= 5:
+        return "Excelente!"
+    elif tentativas <= 8:
+        return "Muito bom."
+    else:
+        return "Conseguiu!"
+
+def jogar():
+    print("Escolha a dificuldade: [1] Fácil (1 a 10) | [2] Normal (1 a 100) | [3] Difícil (1 a 1000)")
+    nivel = input("Opção: ")
+
+    if nivel == "1":
+        limite_numero, max_chances = 10, 4
+    elif nivel == "3":
+        limite_numero, max_chances = 1000, 10
+    else:
+        limite_numero, max_chances = 100, 7
+
+    segredo = sortear(limite_numero)
+    tentativas = 0
+
+    print(f"\nPensei num número de 1 a {limite_numero}. Você tem {max_chances} tentativas!")
+
+    while tentativas < max_chances:
+        chute = int(input(f"Tentativa {tentativas + 1}/{max_chances} - Seu chute: "))
+        tentativas += 1
+        resposta = comparar(chute, segredo)
+
+        if resposta == "acertou":
+            print(f"Acertou em {tentativas} tentativas! {avaliar(tentativas)}")
+            return  
+        else:
+            print(f"O número é {resposta}.")
+
+    print(f"\nSuas tentativas acabaram! O número secreto era {segredo}.")
+
+jogar()
+
+
+
+
+#IMC#
+
+
+
+def calcular_imc(peso, altura):
+    return peso / (altura ** 2)
+
+def faixa_imc(imc):
+    if imc < 18.5:
+        return "Abaixo do peso"
+    elif imc < 25:
+        return "Peso normal"
+    elif imc < 30:
+        return "Sobrepeso"
+    else:
+        return "Obesidade"
+
+
+peso = float(input("Peso (kg): "))
+altura = float(input("Altura (m): "))
+
+imc = calcular_imc(peso, altura)
+print(f"Seu IMC é {imc:.1f} — Classificação: {faixa_imc(imc)}")
