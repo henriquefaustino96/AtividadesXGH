@@ -1,0 +1,53 @@
+import requests
+
+def buscar_cep(cep):
+    cep = cep.strip().replace("-", "").replace(".", "")
+    url = f"https://viacep.com.br/ws/{cep}/json/"
+
+    try:
+        r = requests.get(url, timeout=5)
+    except requests.exceptions.RequestException as e:
+        return None, f"não deu para falar com o servidor ({type(e).__name__})"
+
+    if r.status_code != 200:
+        return None, f"o servidor recusou o pedido (status {r.status_code})"
+
+    try:
+        dados = r.json()
+    except requests.exceptions.JSONDecodeError:
+        return None, "o servidor não mandou JSON"
+
+    if "erro" in dados:
+        return None, "CEP não encontrado"
+
+    return dados, None
+
+def mostrar(cep):
+    dados, problema = buscar_cep(cep)
+    if problema:
+        print(f"[{cep}] ❌ {problema}")
+    else:
+        print(f"[{cep}] ✅ {dados['logradouro']}, {dados['bairro']} - {dados['localidade']}/{dados['uf']}")
+
+
+for teste in ["11310080", "99999999", "123"]:
+    mostrar(teste)
+
+
+
+
+#Trocar api para open mateo#
+
+import requests
+
+url = "https://api.open-meteo.com/v1/forecast"
+parametros = {
+    "latitude": -23.9608,   # Santos - SP
+    "longitude": -46.3336,
+    "current_weather": True
+}
+
+r = requests.get(url, params=parametros, timeout=5)
+if r.status_code == 200:
+    clima = r.json()["current_weather"]
+    print(f"Temperatura atual em Santos: {clima['temperature']}°C | Vento: {clima['windspeed']} km/h")
