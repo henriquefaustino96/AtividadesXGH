@@ -2,7 +2,7 @@
 import pandas as pd
 import random
 
-# 0. Gera o arquivo vendas.xlsx na pasta AtividadesXGH
+
 random.seed(11)
 lojas = ["Centro", "Shopping", "Online"]
 
@@ -16,7 +16,7 @@ linhas = [
 
 pd.DataFrame(linhas).to_excel("vendas.xlsx", index=False)
 
-# 1. Lê o Excel e roda o diagnóstico
+
 def diagnosticar(df):
     print("=" * 40)
     print(f"Total de linhas: {len(df)} | Colunas: {len(df.columns)}")
@@ -43,6 +43,7 @@ def diagnosticar(df):
 df_excel = pd.read_excel("vendas.xlsx")
 diagnosticar(df_excel)
 
+# exercício#
 
 
 import pandas as pd
@@ -70,6 +71,23 @@ def diagnosticar(df):
         print(f"  - {col}: {tipo}")
     print("=" * 40)
 
-# Se não tiver uma planilha pessoal na pasta, você pode testar com o próprio vendas.xlsx gerado na aula:
+
 df_excel = pd.read_excel("vendas.xlsx")
 diagnosticar(df_excel)
+
+#QR CODE#
+
+import qrcode
+
+link = input("Digite o link ou texto para o QR Code: ").strip()
+nome_arquivo = input("Digite o nome do arquivo para salvar (ex: meu_qr): ").strip()
+
+if not nome_arquivo:
+    nome_arquivo = "qrcode_gerado.png"
+elif not nome_arquivo.lower().endswith(".png"):
+    nome_arquivo += ".png"
+
+img = qrcode.make(link)
+img.save(nome_arquivo)
+
+print(f"QR Code salvo com sucesso como '{nome_arquivo}'!")
