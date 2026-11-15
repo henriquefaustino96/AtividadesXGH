@@ -1,0 +1,63 @@
+nomes = ["Henrique", "Mariana", "Lucas", "Fernanda", "Rafael"]
+notas = [8.5, 9.2, 6.0, 7.8, 5.5]
+
+media = sum(notas) / len(notas)
+print(f"Média da turma: {media:.2f}")
+
+
+indice_maior = 0
+for i in range(len(notas)):
+    if notas[i] > notas[indice_maior]:
+        indice_maior = i
+
+print(f"Maior nota: {nomes[indice_maior]} ({notas[indice_maior]})")
+
+
+aprovados = []
+for i in range(len(nomes)):
+    if notas[i] >= 7:
+        aprovados.append(nomes[i])
+
+print("Aprovados:", aprovados)
+
+
+
+#Contador de palavras#
+
+frase = input("Digite uma frase: ")
+palavras = frase.split()
+
+
+print("Quantidade de palavras:", len(palavras))
+
+
+maior = palavras[0]
+for p in palavras:
+    if len(p) > len(maior):
+        maior = p
+print("Maior palavra:", maior)
+
+
+print("Frase invertida:", " ".join(palavras[::-1]))
+
+
+#Analisador de senha#
+
+senha = input("Digite sua senha: ")
+
+letras = 0
+numeros = 0
+
+for c in senha:
+    if c.isalpha():
+        letras += 1
+    elif c.isdigit():
+        numeros += 1
+
+print(f"Letras: {letras}")
+print(f"Números: {numeros}")
+
+if len(senha) >= 8:
+    print("Tamanho OK (8 ou mais caracteres).")
+else:
+    print("Senha curta (menos de 8 caracteres).")

@@ -1,0 +1,28 @@
+#tabuada#
+
+numero = int(input("Digite o número "))
+
+
+for i in range(1, 11):
+  print(f"{numero} x {i} = {numero * i}")
+  
+#advinhação#
+
+import random
+
+segredo = random.randint(1, 100)
+tentativas = 0
+
+while True:
+    chute = int(input("Seu chute: "))
+    tentativas += 1
+
+    if chute < segredo:
+        print("O número secreto é MAIOR.")
+    elif chute > segredo:
+        print("O número secreto é MENOR.")
+    else:
+        print(f"Parabéns! Você acertou o número {segredo} em {tentativas} tentativas.")
+        break
+
+    
