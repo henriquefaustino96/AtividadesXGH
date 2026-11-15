@@ -1,0 +1,12 @@
+preço =25.00
+
+print(f"{preço}")
+print(f"{preço:.2f}")
+
+#conversor de temperatura#
+
+celsius = float(input("Digite a temperatura em Celsius: "))
+
+fahrenheit = celsius * 9 / 5 + 32
+print(f"A temperatura em Fahrenheit é: {fahrenheit:.1f}°F")
+
