@@ -1,0 +1,15 @@
+nome = "Henrique Faustino"
+idade = "30"
+cidade = "São Vicente"
+construir = "estabilidade financiera"
+
+print("meu nome é " + nome)
+print("e minha idade é " + idade)
+print("vivo em " + cidade)
+print("e quero " + construir)
+
+aprender = "nova carreira"
+conseguir = "programar"
+
+aprender = input("por que você quer aprender? ")
+conseguir = input("o que você quer conseguir em 3 meses? ")
