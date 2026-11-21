@@ -1,9 +1,7 @@
-aluno,curso,nota
-Ana,Python,8.5
-Bruno,Python,"7,5"
-Ana,Python,8.5
-Carla,IA,
-Diego,IA,n/a
-Elis,  python ,9.0
-Fabio,IA,15.0
-Gustavo,Python,-3.0
+texto,sentimento
+produto excelente chegou antes do prazo,positivo
+PRODUTO EXCELENTE CHEGOU ANTES DO PRAZO,POSITIVO
+  adorei a qualidade bem embalado   , Negativo 
+produto pessimo veio errado,
+entrega atrasada nao recomendo,negativo
+entrega atrasada nao recomendo,negativo

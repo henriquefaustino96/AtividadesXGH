@@ -1,93 +1,73 @@
-
-import pandas as pd
-import random
-
-
-random.seed(11)
-lojas = ["Centro", "Shopping", "Online"]
-
-linhas = [
-    {"mes": f"2026-{m:02d}",
-     "loja": random.choice(lojas),
-     "pecas": random.randint(10, 90),
-     "faturamento": round(random.uniform(3000, 28000), 2)}
-    for m in range(1, 13) for _ in range(3)
-]
-
-pd.DataFrame(linhas).to_excel("vendas.xlsx", index=False)
-
-
-def diagnosticar(df):
-    print("=" * 40)
-    print(f"Total de linhas: {len(df)} | Colunas: {len(df.columns)}")
-    print("-" * 40)
-
-    faltantes = df.isna().sum()
-    faltantes = faltantes[faltantes > 0]
-    if faltantes.empty:
-        print("Valores faltando: Nenhum!")
-    else:
-        print("Colunas com valor faltando:")
-        for col, qtd in faltantes.items():
-            print(f"  - {col}: {qtd} faltando")
-
-    print("-" * 40)
-    print(f"Linhas duplicadas: {df.duplicated().sum()}")
-
-    print("-" * 40)
-    print("Tipos das colunas:")
-    for col, tipo in df.dtypes.items():
-        print(f"  - {col}: {tipo}")
-    print("=" * 40)
-
-df_excel = pd.read_excel("vendas.xlsx")
-diagnosticar(df_excel)
-
-# exercício#
-
-
-import pandas as pd
-
-def diagnosticar(df):
-    print("=" * 40)
-    print(f"Total de linhas: {len(df)} | Colunas: {len(df.columns)}")
-    print("-" * 40)
-
-    faltantes = df.isna().sum()
-    faltantes = faltantes[faltantes > 0]
-    if faltantes.empty:
-        print("Valores faltando: Nenhum!")
-    else:
-        print("Colunas com valor faltando:")
-        for col, qtd in faltantes.items():
-            print(f"  - {col}: {qtd} faltando")
-
-    print("-" * 40)
-    print(f"Linhas duplicadas: {df.duplicated().sum()}")
-
-    print("-" * 40)
-    print("Tipos das colunas:")
-    for col, tipo in df.dtypes.items():
-        print(f"  - {col}: {tipo}")
-    print("=" * 40)
-
-
-df_excel = pd.read_excel("vendas.xlsx")
-diagnosticar(df_excel)
-
-#QR CODE#
+#qr opcao a#
 
 import qrcode
 
-link = input("Digite o link ou texto para o QR Code: ").strip()
-nome_arquivo = input("Digite o nome do arquivo para salvar (ex: meu_qr): ").strip()
+def meu_github():
+    img = qrcode.make("https://github.com/henriquefaustino96")
+    img.save("github.png")
 
-if not nome_arquivo:
-    nome_arquivo = "qrcode_gerado.png"
-elif not nome_arquivo.lower().endswith(".png"):
-    nome_arquivo += ".png"
+meu_github()
 
-img = qrcode.make(link)
-img.save(nome_arquivo)
+#opcao b tabela bonita faturamento#
 
-print(f"QR Code salvo com sucesso como '{nome_arquivo}'!")
+import pandas as pd
+from rich.console import Console
+from rich.table import Table
+
+df = pd.read_excel("vendas.xlsx")
+
+def tabela_bonita(df):
+    tabela = Table(title="Faturamento por loja")
+    tabela.add_column("Loja")
+    tabela.add_column("Faturamento")
+
+    for loja, valor in df.groupby("loja")["faturamento"].sum().round(2).items():
+        tabela.add_row(loja, str(valor))
+
+    Console().print(tabela)
+
+tabela_bonita(df)
+
+
+#exercicio1 rodar  diagnosticar()##
+
+import pandas as pd
+
+def diagnosticar(df):
+    print("Linhas:", len(df))
+    print("Duplicadas:", df.duplicated().sum())
+    print("Faltando:")
+    print(df.isnull().sum())
+    print("Tipos:")
+    print(df.dtypes)
+
+df_excel = pd.read_excel("vendas.xlsx")
+diagnosticar(df_excel)
+
+#exercicio 2 requirementss# 
+
+#exercico 3 procurar biblioteca#
+
+import syncedlyrics
+
+def buscar_letra():
+    musica = "Qualquer Jeito Katia"
+    letra = syncedlyrics.search(musica)
+    print(letra)
+
+buscar_letra()
+
+#DESAFIO QR CODE INPUT##
+
+import qrcode
+
+def gerar_qrcode():
+    link = input("Digite o link: ") #https://s2.glbimg.com/_X_hFxpWZKZUcAcTb7FZJtAmDjU=/top/i.glbimg.com/og/ig/infoglobo1/f/original/2018/05/29/guns-n-roses.jpg#
+    nome = input("Nome do arquivo: ")
+    
+    img = qrcode.make(link)
+    img.save(nome + ".png")
+
+gerar_qrcode()
+
+

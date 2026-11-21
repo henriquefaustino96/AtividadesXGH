@@ -1,53 +1,74 @@
+#buscador de cep excercico 1#
+
 import requests
 
 def buscar_cep(cep):
-    cep = cep.strip().replace("-", "").replace(".", "")
-    url = f"https://viacep.com.br/ws/{cep}/json/"
-
     try:
-        r = requests.get(url, timeout=5)
-    except requests.exceptions.RequestException as e:
-        return None, f"não deu para falar com o servidor ({type(e).__name__})"
-
-    if r.status_code != 200:
-        return None, f"o servidor recusou o pedido (status {r.status_code})"
-
-    try:
+        r = requests.get(f"https://viacep.com.br/ws/{cep}/json/", timeout=5)
+        if r.status_code != 200:
+            return "CEP invalido"
         dados = r.json()
-    except requests.exceptions.JSONDecodeError:
-        return None, "o servidor não mandou JSON"
+        if "erro" in dados:
+            return "CEP nao encontrado"
+        return f"{dados['logradouro']} - {dados['localidade']}"
+    except:
+        return "Erro ao buscar"
 
-    if "erro" in dados:
-        return None, "CEP não encontrado"
+for cep in ["11013001", "99999999", "123"]:
+    print(cep, "->", buscar_cep(cep))
 
-    return dados, None
-
-def mostrar(cep):
-    dados, problema = buscar_cep(cep)
-    if problema:
-        print(f"[{cep}] ❌ {problema}")
-    else:
-        print(f"[{cep}] ✅ {dados['logradouro']}, {dados['bairro']} - {dados['localidade']}/{dados['uf']}")
-
-
-for teste in ["11310080", "99999999", "123"]:
-    mostrar(teste)
-
-
-
-
-#Trocar api para open mateo#
+#exercicio 2 usar outra API ABERTA#
 
 import requests
 
-url = "https://api.open-meteo.com/v1/forecast"
-parametros = {
-    "latitude": -23.9608,   # Santos - SP
-    "longitude": -46.3336,
-    "current_weather": True
-}
+def ver_idade(nome):
+    r = requests.get("https://api.agify.io", params={"name": nome, "country_id": "BR"}, timeout=5)
+    dados = r.json()
+    print(nome, "-> idade estimada:", dados["age"])
 
-r = requests.get(url, params=parametros, timeout=5)
-if r.status_code == 200:
-    clima = r.json()["current_weather"]
-    print(f"Temperatura atual em Santos: {clima['temperature']}°C | Vento: {clima['windspeed']} km/h")
+ver_idade("henrique")
+
+#3 api que resolva um problema meu#
+ 
+import requests
+
+def buscar_musicas(banda):
+    url = "https://itunes.apple.com/search"
+    params = {"term": banda, "entity": "song", "attribute": "artistTerm", "limit": 5}
+    r = requests.get(url, params=params, timeout=5)
+    dados = r.json()
+    
+    for musica in dados["results"]:
+        print(musica["artistName"], "-", musica["trackName"])
+
+buscar_musicas("Guns N' Roses")
+
+#desafio! completar lista clientes.csv com a couina situacao##
+
+import pandas as pd
+import requests
+
+pd.DataFrame({"cliente": ["Ana", "Bruno", "Carla"], "cep": ["11013001", "99999999", "123"]}).to_csv("clientes.csv", index=False)
+
+def preencher_clientes():
+    df = pd.read_csv("clientes.csv")
+    situacao = []
+    
+    for cep in df["cep"]:
+        r = requests.get(f"https://viacep.com.br/ws/{cep}/json/", timeout=5)
+        if r.status_code != 200:
+            situacao.append("erro")
+        elif "erro" in r.json():
+            situacao.append("nao encontrado")
+        else:
+            situacao.append("ok")
+            
+    df["situacao"] = situacao
+    df.to_csv("clientes_pronto.csv", index=False)
+    print(df)
+
+preencher_clientes()
+
+
+
+

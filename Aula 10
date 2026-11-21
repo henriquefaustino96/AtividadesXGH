@@ -1,117 +1,70 @@
-#relatorio de vendas#
+##exercicio 1 do relatorio de venda#
 
 import pandas as pd
 
-df = pd.read_csv("vendas.csv")
+df_vendas = pd.read_csv("vendas.csv")
 
-# 1. Qual cidade fatura mais, e qual vende mais peças
-por_cidade = df.groupby("cidade").agg(
-    faturamento_total=("valor", "sum"),
-    pecas_vendidas=("quantidade", "sum")
-)
-print("--- Por Cidade ---")
-print(por_cidade)
-print("Cidade que fatura mais:", por_cidade["faturamento_total"].idxmax())
-print("Cidade que vende mais peças:", por_cidade["pecas_vendidas"].idxmax())
+def relatorio_vendas(df):
+    print("Faturamento por cidade:")
+    print(df.groupby("cidade")["valor"].sum().round(2))
+    
+    print("Pecas por cidade:")
+    print(df.groupby("cidade")["quantidade"].sum())
+    
+    print("Ticket medio por produto:")
+    print(df.groupby("produto")["valor"].mean().round(2))
+    
+    df["mes"] = df["data"].str[5:7]
+    print("Faturamento por mes:")
+    print(df.groupby("mes")["valor"].sum().round(2))
+    
+    print("10 maiores vendas:")
+    print(df.nlargest(10, "valor")[["data", "cidade", "produto", "valor"]])
 
-# 2. Qual produto tem o maior ticket médio (média da coluna 'valor' por venda)
-ticket_produto = df.groupby("produto")["valor"].mean()
-print("\n--- Ticket Médio por Produto ---")
-print(ticket_produto.sort_values(ascending=False).round(2))
-print("Maior ticket médio:", ticket_produto.idxmax())
+relatorio_vendas(df_vendas)
 
-# 3. Qual mês foi o melhor
-df["data"] = pd.to_datetime(df["data"])
-df["mes"] = df["data"].dt.to_period("M")
-
-por_mes = df.groupby("mes")["valor"].sum()
-print("\n--- Faturamento por Mês ---")
-print(por_mes)
-print("Melhor mês:", por_mes.idxmax())
-
-# 4. As 10 maiores vendas
-top_10 = df.sort_values(by="valor", ascending=False).head(10)
-print("\n--- Top 10 Maiores Vendas ---")
-print(top_10[["data", "cidade", "produto", "quantidade", "valor"]])
-
-
-#Diagnóstico de tabela#
-
-import pandas as pd
+#2 exercicio diagnostico##
 
 def diagnosticar(df):
-    print("=" * 40)
-    print(f"Total de linhas: {len(df)} | Colunas: {len(df.columns)}")
-    print("-" * 40)
+    print("Linhas:", len(df))
+    print("Duplicadas:", df.duplicated().sum())
+    print("Faltando:")
+    print(df.isnull().sum())
+    print("Tipos:")
+    print(df.dtypes)
 
-    
-    faltantes = df.isna().sum()
-    faltantes = faltantes[faltantes > 0]
-    if faltantes.empty:
-        print("Valores faltando: Nenhum!")
-    else:
-        print("Colunas com valor faltando:")
-        for col, qtd in faltantes.items():
-            print(f"  - {col}: {qtd} faltando")
+diagnosticar(df_vendas)
 
-    print("-" * 40)
-   
-    print(f"Linhas duplicadas: {df.duplicated().sum()}")
+#exercicio 3 limpeza#
 
-    print("-" * 40)
-    
-    print("Tipos das colunas:")
-    for col, tipo in df.dtypes.items():
-        print(f"  - {col}: {tipo}")
-    print("=" * 40)
-
-
-
-    #Limpar de verdade#
-
-    import pandas as pd
-
-
-dados_sujos = """aluno,curso,nota
-Ana,Python,8.5
-Bruno,Python,"7,5"
-Ana,Python,8.5
-Carla,IA,
-Diego,IA,n/a
-Elis,  python ,9.0
-Fabio,IA,15.0
-Gustavo,Python,-3.0
-"""
-
-with open("avaliacoes.csv", "w", encoding="utf-8") as f:
-    f.write(dados_sujos)
+av = pd.read_csv("avaliacoes.csv")
 
 def limpar(df):
     
-    df = df.copy()
-
-    df["aluno"] = df["aluno"].astype(str).str.strip().str.title()
-    df["curso"] = df["curso"].astype(str).str.strip().str.upper()
-    df["nota"] = df["nota"].astype(str).str.replace(",", ".", regex=False)
-    df["nota"] = pd.to_numeric(df["nota"], errors="coerce")
-
+    limpo = df.copy()
     
-    df = df.dropna(subset=["aluno", "nota"])
+    limpo = limpo.dropna(subset=["texto", "sentimento"])
+    
+    limpo["texto"] = limpo["texto"].str.strip().str.lower()
+    limpo["sentimento"] = limpo["sentimento"].str.strip().str.lower()
+    
+    limpo = limpo[(limpo["sentimento"] == "positivo") | (limpo["sentimento"] == "negativo")]
+    
+    limpo = limpo.drop_duplicates()
+    
+    return limpo
 
-   
-    df = df[(df["nota"] >= 0) & (df["nota"] <= 10)]
+av_limpo = limpar(av)
+print("Antes:", len(av), "| Depois:", len(av_limpo))
 
-   
-    df = df.drop_duplicates()
+sujeira = pd.DataFrame({
+    "texto": ["  produto bom  ", "produto bom", "gostei muito"],
+    "sentimento": ["POSITIVO", " positivo ", "nao sei"]
+})
 
-   
-    return df.reset_index(drop=True)
+av_sujo = pd.concat([av, sujeira])
+av_recuperado = limpar(av_sujo)
+print("Com sujeira nova:", len(av_sujo), "| Recuperado:", len(av_recuperado))
 
 
-bruto = pd.read_csv("avaliacoes.csv")
-print("ANTES DA LIMPEZA:")
-print(bruto)
 
-limpo = limpar(bruto)
-print("\nDEPOIS DA LIMPEZA:")
-print(limpo)
